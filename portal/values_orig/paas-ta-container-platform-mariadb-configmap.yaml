@@ -1,0 +1,719 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: paas-ta-container-platform-mariadb-configmap
+data:
+  chgpw.sql: |
+
+    GRANT ALL PRIVILEGES ON *.* TO '{DATABASE_USER_ID}'@'%' IDENTIFIED VIA ed25519 USING PASSWORD('{DATABASE_USER_PASSWORD}') WITH GRANT OPTION;
+    GRANT ALL PRIVILEGES ON *.* TO '{DATABASE_USER_ID}'@'localhost' IDENTIFIED VIA ed25519 USING PASSWORD('{DATABASE_USER_PASSWORD}') WITH GRANT OPTION;
+    GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED VIA ed25519 USING PASSWORD('{DATABASE_USER_PASSWORD}') WITH GRANT OPTION;
+    GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED VIA ed25519 USING PASSWORD('{DATABASE_USER_PASSWORD}') WITH GRANT OPTION;
+    ALTER USER 'mariadb.sys'@'localhost' IDENTIFIED VIA ed25519 USING PASSWORD('{DATABASE_USER_PASSWORD}');
+    FLUSH PRIVILEGES;
+
+  initdb_keycloak.sql: |
+    CREATE DATABASE /*!32312 IF NOT EXISTS*/`{KEYCLOAK_DB_SCHEMA}` /*!40100 DEFAULT CHARACTER SET latin1 */;
+
+  initdb_pipeline_broker.sql: |
+
+    /*
+    SQLyog Ultimate
+    MySQL - 10.1.22-MariaDB : Database - pipeline_broker
+    *********************************************************************
+    */
+
+    /*!40101 SET NAMES utf8 */;
+
+    /*!40101 SET SQL_MODE=''*/;
+
+    /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+    /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+    /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+    /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+    CREATE DATABASE /*!32312 IF NOT EXISTS*/`pipeline_broker` /*!40100 DEFAULT CHARACTER SET latin1 */;
+
+    USE `pipeline_broker`;
+
+    /*Table structure for table `service_instance` */
+
+    DROP TABLE IF EXISTS `service_instance`;
+
+    CREATE TABLE `service_instance` (
+    `service_instance_id` varchar(255) NOT NULL,
+    `dashboard_url` varchar(255) DEFAULT NULL,
+    `organization_guid` varchar(255) DEFAULT NULL,
+    `plan_id` varchar(255) DEFAULT NULL,
+    `service_id` varchar(255) DEFAULT NULL,
+    `space_guid` varchar(255) DEFAULT NULL,
+    PRIMARY KEY (`service_instance_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+    DROP TABLE IF EXISTS `service_instance_project`;
+
+    CREATE TABLE `service_instance_project` (
+    `service_instance_id` varchar(255) NOT NULL,
+    `project_id` varchar(255) NOT NULL,
+    `project_nm` varchar(100) DEFAULT NULL,
+    PRIMARY KEY (`service_instance_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+  initdb_delivery_pipeline.sql: |
+
+    CREATE DATABASE /*!32312 IF NOT EXISTS*/`delivery_pipeline` /*!40100 DEFAULT CHARACTER SET utf8 */;
+
+    USE `delivery_pipeline`;
+
+
+    /*Table structure for table `audit_history` */
+
+    DROP TABLE IF EXISTS `audit_history`;
+
+    CREATE TABLE `audit_history` (
+    `id` bigint(20) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `importance` int(2),
+    `user_name` varchar(255),
+    `login_type` int(2),
+    `category1` varchar(255),
+    `category2` varchar(255),
+    `action` varchar(255),
+    `description` varchar(255)
+    );
+
+    /*Table structure for table `authority` */
+
+    DROP TABLE IF EXISTS `authority`;
+
+    CREATE TABLE `authority` (
+    `id` varchar(255) NOT NULL,
+    `description` varchar(255) DEFAULT NULL,
+    `display_name` varchar(255) DEFAULT NULL,
+    `auth_type` varchar(255) DEFAULT NULL,
+    `code` varchar(255) DEFAULT NULL,
+    `auth_code` varchar(255) DEFAULT NULL,
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+    /*Table structure for table `cf_info` */
+
+    DROP TABLE IF EXISTS `cf_info`;
+
+    CREATE TABLE `cf_info` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `service_instances_id` varchar(255) NOT NULL,
+    `cf_name` varchar(255) NOT NULL,
+    `cf_id` varchar(255) NOT NULL,
+    `cf_password` varchar(255) NOT NULL,
+    `cf_api_url` varchar(255) NOT NULL,
+    `description` text,
+    `user_id` varchar(255) NOT NULL,
+    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `last_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8;
+
+    /*Table structure for table `cf_url` */
+
+    DROP TABLE IF EXISTS `cf_url`;
+
+    CREATE TABLE `cf_url` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `service_instances_id` varchar(255) NOT NULL,
+    `cf_api_name` varchar(255) NOT NULL,
+    `cf_api_url` varchar(255) NOT NULL,
+    `user_id` varchar(255) NOT NULL,
+    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `last_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
+
+    /*Table structure for table `ci_info` */
+
+    DROP TABLE IF EXISTS `ci_info`;
+
+    CREATE TABLE `ci_info` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `server_url` varchar(255) DEFAULT NULL,
+    `used_count` int(11) DEFAULT '0',
+    `type` varchar(255) DEFAULT NULL,
+    `status` varchar(255) DEFAULT 'N',
+    PRIMARY KEY (`id`) USING BTREE
+    ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+    /*Table structure for table `file_info` */
+
+    DROP TABLE IF EXISTS `file_info`;
+
+    CREATE TABLE `file_info` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `file_url` varchar(255) NOT NULL,
+    `original_file_name` varchar(255) NOT NULL,
+    `stored_file_name` varchar(255) NOT NULL,
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+
+    /*Table structure for table `service_instances` */
+
+    DROP TABLE IF EXISTS `service_instances`;
+
+    CREATE TABLE `service_instances` (
+    `id` varchar(255) NOT NULL,
+    `owner` varchar(255) DEFAULT NULL,
+    `ci_server_url` varchar(255) DEFAULT 'http://115.68.46.29',
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+    /*Table structure for table `user` */
+
+    DROP TABLE IF EXISTS `user`;
+
+    CREATE TABLE `user` (
+    `id` varchar(255) NOT NULL,
+    `cell_phone` varchar(255) DEFAULT NULL,
+    `company` varchar(255) NOT NULL,
+    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `email` varchar(255) NOT NULL,
+    `last_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `name` varchar(255) NOT NULL,
+    `tell_phone` varchar(255) DEFAULT NULL,
+    `description` varchar(255) DEFAULT NULL,
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+    /*Table structure for table `instance_use` */
+
+    DROP TABLE IF EXISTS `instance_use`;
+
+    CREATE TABLE `instance_use` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `service_instances_id` varchar(255) NOT NULL,
+    `user_id` varchar(255) NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `FKhl9yxr1apo2gl15ptufmfwxm5` (`service_instances_id`),
+    KEY `FK457b685l6r2p6yc2rvxrlpq3r` (`user_id`),
+    CONSTRAINT `FK457b685l6r2p6yc2rvxrlpq3r` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+    CONSTRAINT `FKhl9yxr1apo2gl15ptufmfwxm5` FOREIGN KEY (`service_instances_id`) REFERENCES `service_instances` (`id`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=229 DEFAULT CHARSET=utf8;
+
+    /*Table structure for table `granted_authority` */
+
+    DROP TABLE IF EXISTS `granted_authority`;
+
+    CREATE TABLE `granted_authority` (
+    `id` varchar(255) NOT NULL,
+    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `instance_use_id` bigint(20) DEFAULT NULL,
+    `authority_id` varchar(255) NOT NULL,
+    `auth_code` bigint(20) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `FKmnl3l55ouqd8cmxqy1h7fuxqg` (`authority_id`),
+    KEY `FK288xuffrgdmthn0qduv15qenq` (`instance_use_id`),
+    CONSTRAINT `FK288xuffrgdmthn0qduv15qenq` FOREIGN KEY (`instance_use_id`) REFERENCES `instance_use` (`id`),
+    CONSTRAINT `FKmnl3l55ouqd8cmxqy1h7fuxqg` FOREIGN KEY (`authority_id`) REFERENCES `authority` (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+    /*Table structure for table `harbor_info` */
+    DROP TABLE IF EXISTS `harbor_info`;
+
+    CREATE TABLE `harbor_info` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `service_instances_id` varchar(255) NOT NULL,
+    `repository_url` varchar(255) NOT NULL,
+    `project_id` int(20) NOT NULL,
+    `project_name` varchar(255) NOT NULL,
+    `user_id` int(20) NOT NULL,
+    `user_name` varchar(255) NOT NULL,
+    `user_password` varchar(255) NOT NULL,
+    `is_owner` varchar(1) DEFAULT 'N',
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+    /*Table structure for table `job` */
+
+    DROP TABLE IF EXISTS `job`;
+
+    CREATE TABLE `job` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `service_instances_id` varchar(255) NOT NULL,
+    `pipeline_id` int(11) NOT NULL,
+    `job_type` varchar(255) NOT NULL,
+    `job_name` varchar(255) NOT NULL,
+    `job_guid` varchar(255) NOT NULL,
+    `group_order` int(11) NOT NULL,
+    `job_order` int(11) NOT NULL,
+    `builder_target` varchar(255) DEFAULT 'CloudFoundry',
+    `builder_type` varchar(255) DEFAULT NULL,
+    `build_job_id` int(11) DEFAULT NULL,
+    `job_trigger` varchar(255) DEFAULT NULL,
+    `post_action_yn` varchar(255) DEFAULT 'N',
+    `repository_type` varchar(255) DEFAULT NULL,
+    `repository_url` varchar(255) DEFAULT NULL,
+    `repository_id` varchar(255) DEFAULT NULL,
+    `repository_account_id` varchar(255) DEFAULT NULL,
+    `repository_account_password` varchar(255) DEFAULT NULL,
+    `repository_branch` varchar(255) DEFAULT NULL,
+    `repository_commit_revision` varchar(255) DEFAULT NULL,
+    `cf_info_id` bigint(20) DEFAULT NULL,
+    `kube_config_id` bigint(20) DEFAULT 0,
+    `vm_info_id` bigint(20) DEFAULT 0,
+    `app_name` varchar(255) DEFAULT NULL,
+    `app_url` varchar(255) DEFAULT NULL,
+    `cf_domain` varchar(255) DEFAULT NULL,
+    `deploy_type` varchar(255) DEFAULT NULL,
+    `blue_green_deploy_status` varchar(255) DEFAULT NULL,
+    `deploy_target_org` varchar(255) DEFAULT NULL,
+    `deploy_target_space` varchar(255) DEFAULT NULL,
+    `manifest_use_yn` varchar(1) DEFAULT 'N',
+    `manifest_script` text,
+    `inspection_project_id` varchar(255) DEFAULT NULL,
+    `inspection_project_name` varchar(255) DEFAULT NULL,
+    `inspection_project_key` varchar(255) DEFAULT NULL,
+    `inspection_profile_key` varchar(255) DEFAULT NULL,
+    `inspection_gate_id` varchar(255) DEFAULT NULL,
+    `dockerfile_script` text,
+    `docker_image_name` varchar(255) DEFAULT NULL,
+    `docker_image_repo_url` varchar(255) DEFAULT NULL,
+    `docker_image_repo_project_name` varchar(255) DEFAULT NULL,
+    `docker_image_repo_account_id` varchar(255) DEFAULT NULL,
+    `docker_image_repo_account_password` varchar(255) DEFAULT NULL,
+    `kube_deployment_script` text,
+    `kube_service_script` text,
+    `kube_ingress_script` text,
+    `enable_pinpoint` varchar(1) DEFAULT 'N',
+    `vm_exec_command` text,
+    `user_id` varchar(255) NOT NULL,
+    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `last_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8;
+
+    /*Table structure for table `job_history` */
+
+    DROP TABLE IF EXISTS `job_history`;
+
+    CREATE TABLE `job_history` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `job_id` int(11) NOT NULL,
+    `previous_job_number` int(11) DEFAULT NULL,
+    `job_number` int(11) NOT NULL,
+    `duration` bigint(20) DEFAULT NULL,
+    `status` varchar(255) NOT NULL,
+    `file_id` int(11) DEFAULT NULL,
+    `trigger_type` varchar(255) NOT NULL,
+    `user_id` varchar(255) NOT NULL,
+    `ref_docker_tag` varchar(128) DEFAULT NULL,
+    `ref_file_id` bigint(20) DEFAULT -1,
+    `redmine_issue_id` bigint(20) DEFAULT 0,
+    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `last_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8;
+
+
+    /*Table structure for table `kube_config` */
+
+    DROP TABLE IF EXISTS `kube_config`;
+
+
+    CREATE TABLE `kube_config` (
+    `id` bigint(20) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `service_instances_id` varchar(255) NOT NULL,
+    `config_name` varchar(255) NOT NULL,
+    `kubeconfig` text NOT NULL,
+    `user_id` varchar(255) NOT NULL,
+    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+
+    /*Table structure for table `pipeline` */
+
+    DROP TABLE IF EXISTS `pipeline`;
+
+    CREATE TABLE `pipeline` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `last_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `name` varchar(255) NOT NULL,
+    `service_instances_id` varchar(255) DEFAULT NULL,
+    `description` text,
+    PRIMARY KEY (`id`),
+    KEY `FKev6qocyrugsn8auxb6y29cjbt` (`service_instances_id`),
+    CONSTRAINT `FKev6qocyrugsn8auxb6y29cjbt` FOREIGN KEY (`service_instances_id`) REFERENCES `service_instances` (`id`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+
+    /*Table structure for table `quality_gate` */
+
+    DROP TABLE IF EXISTS `quality_gate`;
+
+    CREATE TABLE `quality_gate` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `service_instances_id` varchar(255) NOT NULL,
+    `quality_gate_id` bigint(20) NOT NULL,
+    `quality_gate_name` varchar(255) NOT NULL,
+    `gate_default_yn` varchar(1) NOT NULL DEFAULT 'N',
+    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `last_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+    /*Table structure for table `quality_profile` */
+
+    DROP TABLE IF EXISTS `quality_profile`;
+
+    CREATE TABLE `quality_profile` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `service_instances_id` varchar(255) NOT NULL,
+    `quality_profile_id` bigint(20) NOT NULL,
+    `quality_profile_name` varchar(255) NOT NULL,
+    `quality_profile_key` varchar(255) NOT NULL,
+    `language` varchar(255) NOT NULL,
+    `language_name` varchar(255) NOT NULL,
+    `profile_default_yn` varchar(1) NOT NULL DEFAULT 'N',
+    `active_rule_count` int(11) NOT NULL,
+    `active_deprecated_rule_count` int(11) NOT NULL,
+    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `last_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+    /*Table structure for table `sonar_project` */
+
+    INSERT INTO `service_instances`(`id`, `owner`, `ci_server_url`) VALUES ('standalone', 'admin', 'http://{K8S_MASTER_NODE_IP}:30086');
+
+    DROP TABLE IF EXISTS `sonar_project`;
+
+    CREATE TABLE `sonar_project` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `service_instances_id` varchar(255) NOT NULL,
+    `pipeline_id` bigint(20) NOT NULL DEFAULT '0',
+    `job_id` bigint(20) NOT NULL DEFAULT '0',
+    `project_id` bigint(20) NOT NULL,
+    `project_name` varchar(255) NOT NULL,
+    `project_key` varchar(255) NOT NULL,
+    `quality_profile_key` varchar(255) NOT NULL,
+    `quality_gate_id` varchar(255) NOT NULL,
+    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `last_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8;
+
+    DROP TABLE IF EXISTS `vm_info`;
+
+    CREATE TABLE `vm_info` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `service_instances_id` varchar(255) NOT NULL,
+    `vm_name` varchar(255) NOT NULL,
+    `ssh_host_name` varchar(255) NOT NULL,
+    `ssh_user_name` varchar(255) NOT NULL,
+    `ssh_port` int(5) NOT NULL,
+    `ssh_auth_method` int(2),
+    `ssh_user_pwd` varchar(255),
+    `ssh_private_key` text,
+    `ssh_remote_dir` text,
+    `ssh_exec_cmd` text,
+    `user_id` varchar(255) NOT NULL,
+    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+    DROP TABLE IF EXISTS `properties`;
+    CREATE TABLE `properties` (
+    `service_instance` varchar(200) NOT NULL COMMENT '서비스 인스턴스',
+    `label` varchar(100) NOT NULL COMMENT '프로젝트명',
+    `application` varchar(100) NOT NULL COMMENT '어플리케이션 이름',
+    `profile` varchar(20) NOT NULL COMMENT '프로파일명',
+    `key` varchar(255) NOT NULL COMMENT 'properties key',
+    `value` varchar(3000) DEFAULT NULL COMMENT 'properties value',
+    PRIMARY KEY (`service_instance`,`label`,`application`,`profile`,`key`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+    /*Data for the table `authority` */
+
+    insert  into `authority`(`id`,`description`,`display_name`,`auth_type`,`code`,`auth_code`) values ('b5307a8b-6e25-47f4-858b-24d32b247404','dashboard manager','관리자','dashboard','dashboard.manager',NULL);
+    insert  into `authority`(`id`,`description`,`display_name`,`auth_type`,`code`,`auth_code`) values ('b996ab40-29f6-4a4b-8439-530b69724247','read','보기권한','pipeline','read',NULL);
+    insert  into `authority`(`id`,`description`,`display_name`,`auth_type`,`code`,`auth_code`) values ('c10648f2-881a-4b1c-a449-c706734ab668','write','생성권한','pipeline','write',NULL);
+    insert  into `authority`(`id`,`description`,`display_name`,`auth_type`,`code`,`auth_code`) values ('ed537e6e-2f70-4d8f-a8c9-12b0f8eec09d','execute','실행권한','pipeline','execute',NULL);
+    insert  into `authority`(`id`,`description`,`display_name`,`auth_type`,`code`,`auth_code`) values ('f3f5b956-9d24-431a-9ab6-e55864e71179','dashboard user','사용자','dashboard','dashboard.user',NULL);
+
+
+  initdb_portal_broker.sql: |
+
+    /*
+    MySQL - 10.5.9-MariaDB : Database - CaaS broker & dashboard & webUser & webAdmin
+    *********************************************************************
+    */
+
+    CREATE DATABASE /*!32312 IF NOT EXISTS*/`broker` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
+
+    USE `broker`;
+
+    /*Table structure for table `admin_token` */
+
+    DROP TABLE IF EXISTS `admin_token`;
+
+    CREATE TABLE `admin_token` (
+    `token_name` varchar(255) NOT NULL,
+    `token_value` varchar(1200) NOT NULL,
+    PRIMARY KEY (`token_name`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
+    INSERT INTO `broker`.`admin_token`(`token_name`, `token_value`) VALUES ('caas_admin', '{K8S_AUTH_BEARER_TOKEN}');
+
+    -- ----------------------------
+    -- Table structure for jenkins_instance
+    -- ----------------------------
+    DROP TABLE IF EXISTS `jenkins_instance`;
+    CREATE TABLE `jenkins_instance`  (
+    `organization_guid` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+    `name_space` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
+    `service_instance_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+    PRIMARY KEY (`service_instance_id`) USING BTREE
+    ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Compact;
+
+    /*Table structure for table `service_instances` */
+
+    DROP TABLE IF EXISTS `service_instance`;
+
+    CREATE TABLE `service_instance` (
+    `service_instance_id` varchar(255) NOT NULL,
+    `user_id` varchar(255) DEFAULT NULL,
+    `caas_account_token_name` varchar(255) DEFAULT NULL,
+    `caas_account_name` varchar(255) DEFAULT NULL,
+    `caas_namespace` varchar(255) DEFAULT NULL,
+    `dashboard_url` varchar(255) DEFAULT NULL,
+    `dashboard_type` varchar(255) DEFAULT NULL,
+    `organization_guid` varchar(255) DEFAULT NULL,
+    `plan_id` varchar(255) DEFAULT NULL,
+    `service_definition_id` varchar(255) DEFAULT NULL,
+    `space_guid` varchar(255) DEFAULT NULL,
+    PRIMARY KEY (`service_instance_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+  initdb_portal_database.sql: |
+
+    CREATE DATABASE /*!32312 IF NOT EXISTS*/`cp` /*!40100 DEFAULT CHARACTER SET latin1 */;
+    USE `cp`;
+
+    -- ----------------------------
+    -- Table structure for admin_token
+    -- ----------------------------
+    DROP TABLE IF EXISTS `admin_token`;
+    CREATE TABLE `admin_token`  (
+    `token_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'token name(토큰 명)',
+    `token_value` varchar(2000) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'token value(토큰 값)',
+    PRIMARY KEY (`token_name`) USING BTREE
+    ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '클러스터 어드민 토큰' ROW_FORMAT = Dynamic;
+
+    INSERT INTO `admin_token`(`token_name`, `token_value`) VALUES ('cp_admin', '{K8S_AUTH_BEARER_TOKEN}');
+
+    -- ----------------------------
+    -- Table structure for cp_clusters
+    -- ----------------------------
+    DROP TABLE IF EXISTS `cp_clusters`;
+    CREATE TABLE `cp_clusters`  (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id(아이디)',
+    `cluster_api_url` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'cluster api url(클러스터 API URL)',
+    `cluster_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'cluster name(클러스터 명)',
+    `cluster_token` varchar(2000) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'cluster token(클러스터 토큰)',
+    `created` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'created(생성일)',
+    `last_modified` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'last modified(수정일)',
+    PRIMARY KEY (`id`) USING BTREE
+    ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci COMMENT = '클러스터' ROW_FORMAT = Dynamic;
+
+    INSERT INTO `cp_clusters`(`cluster_api_url`, `cluster_name`, `cluster_token`, `created`, `last_modified`) VALUES ('https://{K8S_MASTER_NODE_IP}:{K8S_API_SERVER_PORT}', 'cp-cluster', '{K8S_AUTH_BEARER_TOKEN}', DATE_FORMAT(NOW(), '%Y-%m-%d %T'), DATE_FORMAT(NOW(), '%Y-%m-%d %T'));
+
+    -- ----------------------------
+    -- Table structure for cp_limit_ranges
+    -- ----------------------------
+    DROP TABLE IF EXISTS `cp_limit_ranges`;
+    CREATE TABLE `cp_limit_ranges`  (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id(아이디)',
+    `default_limit` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'default limit(기본 상한 값)',
+    `default_request` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'default request(기본 요청 값)',
+    `max` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'max(컨테이너에 지정할 리밋레인지 최대 값)',
+    `min` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'min(컨테이너에 지정할 리밋레인지 최소 값)',
+    `name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'name(리밋 레인지 명)',
+    `resource` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'resource(리밋 레인지 리소스)',
+    `type` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'type(리밋 레인지 유형)',
+    `created` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'created(생성일)',
+    PRIMARY KEY (`id`) USING BTREE
+    ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci COMMENT = '리밋 레인지' ROW_FORMAT = Dynamic;
+
+    -- ----------------------------
+    -- Records of cp_limit_ranges
+    -- ----------------------------
+    INSERT INTO `cp_limit_ranges`(`id`, `default_limit`, `default_request`, `max`, `min`, `name`, `resource`, `type`, `created`) VALUES (1, '100m', '-', '-', '-', 'paas-ta-container-platform-low-limit-range', 'cpu', 'Container', '2020-11-05 13:26:24');
+    INSERT INTO `cp_limit_ranges`(`id`, `default_limit`, `default_request`, `max`, `min`, `name`, `resource`, `type`, `created`) VALUES (2, '500Mi', '-', '-', '-', 'paas-ta-container-platform-low-limit-range', 'memory', 'Container', '2020-11-05 13:27:24');
+    INSERT INTO `cp_limit_ranges`(`id`, `default_limit`, `default_request`, `max`, `min`, `name`, `resource`, `type`, `created`) VALUES (3, '300m', '-', '-', '-', 'paas-ta-container-platform-medium-limit-range', 'cpu', 'Container', '2020-11-05 13:27:59');
+    INSERT INTO `cp_limit_ranges`(`id`, `default_limit`, `default_request`, `max`, `min`, `name`, `resource`, `type`, `created`) VALUES (4, '1500Mi', '-', '-', '-', 'paas-ta-container-platform-medium-limit-range', 'memory', 'Container', '2020-11-05 13:27:59');
+    INSERT INTO `cp_limit_ranges`(`id`, `default_limit`, `default_request`, `max`, `min`, `name`, `resource`, `type`, `created`) VALUES (5, '900m', '-', '-', '-', 'paas-ta-container-platform-high-limit-range', 'cpu', 'Container', '2020-11-05 13:27:59');
+    INSERT INTO `cp_limit_ranges`(`id`, `default_limit`, `default_request`, `max`, `min`, `name`, `resource`, `type`, `created`) VALUES (6, '3Gi', '-', '-', '-', 'paas-ta-container-platform-high-limit-range', 'memory', 'Container', '2020-11-05 13:27:59');
+
+    -- ----------------------------
+    -- Table structure for cp_resource_quotas
+    -- ----------------------------
+    DROP TABLE IF EXISTS `cp_resource_quotas`;
+    CREATE TABLE `cp_resource_quotas`  (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id(아이디)',
+    `limit_cpu` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'limit cpu(cpu 상한 값)',
+    `limit_memory` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'limit memory(memory 상한 값)',
+    `name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'name(리소스 쿼터 명)',
+    `request_cpu` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'request cpu(cpu 요청 값)',
+    `request_memory` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'request memory(memory 요청 값)',
+    `status` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'status(할당량 및 현재 사용량 상태)',
+    `created` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'created(생성일)',
+    PRIMARY KEY (`id`) USING BTREE
+    ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci COMMENT = '리소스 쿼터' ROW_FORMAT = Dynamic;
+
+    -- ----------------------------
+    -- Records of cp_resource_quotas
+    -- ----------------------------
+    INSERT INTO `cp_resource_quotas`(`id`, `limit_cpu`, `limit_memory`, `name`, `request_cpu`, `request_memory`, `status`, `created`) VALUES (1, '2', '2Gi', 'paas-ta-container-platform-low-rq', '-', '-', '{\"cpu\":{\"used\":\"200m\",\"hard\":\"2\"}, \"memory\":{\"used\":\"1800Mi\",\"hard\": \"2Gi\"}}', '2020-11-05 13:26:24');
+    INSERT INTO `cp_resource_quotas`(`id`, `limit_cpu`, `limit_memory`, `name`, `request_cpu`, `request_memory`, `status`, `created`) VALUES (2, '4', '6Gi', 'paas-ta-container-platform-medium-rq', '-', '-', '{\"cpu\":{\"used\":\"200m\",\"hard\":\"4\"}, \"memory\":{\"used\":\"1800Mi\",\"hard\": \"6Gi\"}}', '2020-11-05 13:26:24');
+    INSERT INTO `cp_resource_quotas`(`id`, `limit_cpu`, `limit_memory`, `name`, `request_cpu`, `request_memory`, `status`, `created`) VALUES (3, '8', '12Gi', 'paas-ta-container-platform-high-rq', '-', '-', '{\"cpu\":{\"used\":\"200m\",\"hard\":\"8\"}, \"memory\":{\"used\":\"1800Mi\",\"hard\": \"12Gi\"}}', '2020-11-05 13:26:24');
+
+    -- ----------------------------
+    -- Table structure for cp_users
+    -- ----------------------------
+    DROP TABLE IF EXISTS `cp_users`;
+    CREATE TABLE `cp_users`  (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id(아이디)',
+    `cluster_api_url` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'cluster api url(클러스터 API URL)',
+    `cluster_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'cluster name(클러스터 명)',
+    `cluster_token` varchar(2000) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'cluster token(클러스터 토큰)',
+    `created` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'created(생성일)',
+    `description` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'description(설명)',
+    `email` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'email(이메일)',
+    `last_modified` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'last modified(수정일)',
+    `password` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'password(비밀번호)',
+    `role_set_code` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'role set code(권한)',
+    `service_account_name` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'service account name(service account 명)',
+    `user_id` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'user id(사용자 아이디)',
+    `user_type` varchar(32) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'user type(사용자 유형)',
+    `namespace` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'namespace(namespace 명)',
+    `is_active` varchar(1) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'N' COMMENT 'is active(사용 여부)',
+    `service_account_secret` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'service account secret(service account secret 명)',
+    `service_account_token` varchar(2000) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'service account token(service account 토큰)',
+    `user_auth_id` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'user auth id(사용자 인증 아이디)',
+    PRIMARY KEY (`id`) USING BTREE
+    ) ENGINE = InnoDB AUTO_INCREMENT = 1178 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci COMMENT = '사용자' ROW_FORMAT = Dynamic;
+
+
+    -- ----------------------------
+    -- Table structure for private_repository
+    -- ----------------------------
+    DROP TABLE IF EXISTS `private_repository`;
+    CREATE TABLE `private_repository`  (
+    `seq` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'seq(시퀀스)',
+    `repository_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'repository url(저장소 URL)',
+    `repository_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'repository name(저장소 명)',
+    `image_name` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'image name(이미지명)',
+    `image_version` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'image version(이미지버전)',
+    PRIMARY KEY (`seq`) USING BTREE
+    ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '프라이빗 레파지토리' ROW_FORMAT = Dynamic;
+
+    INSERT INTO `private_repository`(`repository_url`, `repository_name`, `image_name`, `image_version` ) VALUES ('http://{REPOSITORY_URL}', '{REPOSITORY_PROJECT_NAME}','paas-ta-container-platform-harbor','latest');
+
+  initdb_cp_scm.sql: |
+
+    /* SET FOREIGN_KEY_CHECKS = 1; */
+
+    /*
+    Navicat MariaDB Data Transfer
+    Source Database       : PAASTA_SRC_DB
+    Target Server Type    : MariaDB
+    Target Server Version : 100122
+    Date: 2017-11-08 20:32:21
+    */
+
+    /* SET FOREIGN_KEY_CHECKS= 0; */
+    CREATE DATABASE IF NOT EXISTS `cp_scm` CHARACTER SET utf8 COLLATE utf8_general_ci;
+    USE `cp_scm`;
+
+    -- ----------------------------
+    -- Table structure for commit_history
+    -- ----------------------------
+    CREATE TABLE `commit_history` (
+    `id` bigint(22) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `author` varchar(255),
+    `modifications` varchar(255),
+    `files` text,
+    `branches` text,
+    `description` text,
+    `is_confirmed` char(1)
+    );
+
+    -- ----------------------------
+    -- Table structure for REPO_PERMITION
+    -- ----------------------------
+    DROP TABLE IF EXISTS `REPO_PERMITION`;
+    CREATE TABLE `REPO_PERMITION` (
+    `NO` int(11) NOT NULL AUTO_INCREMENT,
+    `REPO_NO` int(11) NOT NULL,
+    `USER_ID` varchar(128) NOT NULL,
+    `PERMISSION` varchar(128) NOT NULL,
+    PRIMARY KEY (`NO`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=914 DEFAULT CHARSET=utf8;
+
+    -- ----------------------------
+    -- Table structure for SC_INSTANCE_USER
+    -- ----------------------------
+    DROP TABLE IF EXISTS `SC_INSTANCE_USER`;
+    CREATE TABLE `SC_INSTANCE_USER` (
+    `NO` int(11) NOT NULL AUTO_INCREMENT,
+    `INSTANCE_ID` varchar(255) NOT NULL,
+    `USER_ID` varchar(128) NOT NULL,
+    `REPO_ROLE` varchar(128) DEFAULT NULL,
+    `CREATER_YN` varchar(2) NOT NULL,
+    `CREATED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `MODIFIED_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`NO`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=308 DEFAULT CHARSET=utf8;
+
+    -- ----------------------------
+    -- Table structure for SC_REPOSITORY
+    -- ----------------------------
+    DROP TABLE IF EXISTS `SC_REPOSITORY`;
+    CREATE TABLE `SC_REPOSITORY` (
+    `REPO_NO` int(11) NOT NULL AUTO_INCREMENT,
+    `REPO_SCM_ID` varchar(128) NOT NULL,
+    `REPO_NAME` varchar(255) NOT NULL,
+    `REPO_DESC` varchar(255) DEFAULT NULL,
+    `INSTANCE_ID` varchar(255) NOT NULL,
+    `OWNER_USER_ID` varchar(128) NOT NULL,
+    `CREATE_USER_ID` varchar(128) NOT NULL,
+    `CREATED_TIME` varchar(12) NOT NULL,
+    PRIMARY KEY (`REPO_NO`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=538 DEFAULT CHARSET=utf8;
+
+    -- ----------------------------
+    -- Table structure for SC_USER
+    -- ----------------------------
+    DROP TABLE IF EXISTS `SC_USER`;
+    CREATE TABLE `SC_USER` (
+    `USER_ID` varchar(255) NOT NULL,
+    `USER_DESC` varchar(255) DEFAULT NULL,
+    `USER_MAIL` varchar(255) DEFAULT NULL,
+    `USER_NAME` varchar(255) DEFAULT NULL,
+    PRIMARY KEY (`USER_ID`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+    -- ----------------------------
+    -- Table structure for SERVICE_INSTANCE
+    -- ----------------------------
+    DROP TABLE IF EXISTS `SERVICE_INSTANCE`;
+    CREATE TABLE `SERVICE_INSTANCE` (
+    `INSTANCE_ID` varchar(255) NOT NULL COMMENT '서비스 인스턴스 아이디',
+    `ORGANIZATION_GUID` varchar(255) NOT NULL COMMENT '조직 아이디',
+    `ORGANIZATION_NAME` varchar(128) DEFAULT NULL COMMENT '조직 명',
+    `PLAN_ID` varchar(255) NOT NULL COMMENT '플랜 아이디',
+    `SERVICE_ID` varchar(255) NOT NULL COMMENT '서비스 아이디',
+    `SPACE_GUID` varchar(255) NOT NULL COMMENT '공간 아이디',
+    `CREATE_USER_ID` varchar(128) DEFAULT NULL COMMENT '등록자 아이디',
+    `CREATED_TIME` varchar(12) NOT NULL COMMENT '등록일',
+    PRIMARY KEY (`INSTANCE_ID`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='형상관리 서비스 인스턴스 관리';
+    SET FOREIGN_KEY_CHECKS=1;
