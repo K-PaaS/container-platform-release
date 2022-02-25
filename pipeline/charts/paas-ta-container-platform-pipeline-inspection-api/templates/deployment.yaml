@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.metadata.name }}-deployment
+  labels:
+    app: {{ .Values.metadata.name }}
+  namespace: {{ .Values.metadata.namespace }}
+spec:
+  replicas: {{ .Values.spec.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.metadata.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.metadata.name }}
+    spec:
+      containers:
+        - name: {{ .Values.metadata.name }}
+          image: {{ .Values.image.registry }}/{{ .Values.image.project }}/{{ .Values.image.name }}:{{ .Values.image.tags }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: CONTAINER_PLATFORM_PIPELINE_COMMON_API_URI
+              value: {{ .Values.env.cp.pipeline.common.api | quote }}
+            - name: INSPECTION_SERVER_URL
+              value: {{ .Values.env.inspection.server.url | quote }}
+            - name: INSPECTION_ADMIN_ID
+              value: {{ .Values.env.inspection.admin.id | quote }}
+            - name: INSPECTION_ADMIN_PASSWORD
+              value: {{ .Values.env.inspection.admin.password | quote }}
+      imagePullSecrets:
+        - name: {{ .Values.image.secret }}

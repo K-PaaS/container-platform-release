@@ -1,0 +1,41 @@
+# Default values for paas-ta-container-platform-pipeline-jenkins.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+metadata:
+  name: container-platform-pipeline-jenkins
+  namespace: ${NAMESPACE}
+
+spec:
+  replicas: 1
+
+image:
+  registry: ${REPOSITORY_URL}
+  project: ${REPOSITORY_PROJECT_NAME}
+  name: paas-ta-container-platform-pipeline-jenkins
+  tags: ${IMAGE_TAGS}
+  pullPolicy: ${IMAGE_PULL_POLICY}
+  secret: ${IMAGE_PULL_SECRET}
+  isPrivileged: true
+
+persistent:
+  accessModes: ReadWriteOnce
+  storage:
+    class: ${PERSISTENT_STORAGE_CLASS_NAME}
+    size: 5Gi
+
+service:
+  type: ${SERVICE_TYPE}
+  protocol: ${SERVICE_PROTOCOL}
+  port: 8080
+  targetPort: 8080
+  nodePort: 30086
+
+env:
+  harbor:
+    url: ${REPOSITORY_URL}
+  jenkins:
+    url: "container-platform-pipeline-jenkins-service.${NAMESPACE}.svc.cluster.local:8080"
+  sonarqube:
+    url: "container-platform-pipeline-inspection-service.${NAMESPACE}.svc.cluster.local:9000"
+  

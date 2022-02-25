@@ -1,0 +1,35 @@
+# Default values for paas-ta-container-platform-api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+metadata:
+  name: container-platform-api
+  namespace: ${CONTAINER_PLATFORM_PORTAL_NAMESPACE}
+
+spec:
+  replicas: 1
+
+image:
+  registry: ${REPOSITORY_URL}
+  project: ${REPOSITORY_PROJECT_NAME}
+  name: paas-ta-container-platform-api
+  tags: ${IMAGE_TAGS}
+  pullPolicy: ${IMAGE_PULL_POLICY}
+  secret: ${IMAGE_PULL_SECRET}
+
+service:
+  type: ${SERVICE_TYPE}
+  protocol: ${SERVICE_PROTOCOL}
+  port: 3333
+  targetPort: 3333
+  nodePort: 32701
+
+env:
+  k8s:
+    api:
+      server: "https://${K8S_MASTER_NODE_IP}:${K8S_API_SERVER_PORT}"
+  cp:
+    common:
+      api:
+        url: "http://container-platform-common-api-service.${CONTAINER_PLATFORM_PORTAL_NAMESPACE}.svc.cluster.local:3334"
+    ignoreNamespace: "kubernetes-dashboard, kube-node-lease, kube-public, kube-system, default, paas-ta-container-platform-temp-namespace, ${NFS_NAMESPACE}, ${REPOSITORY_NAMESPACE}, ${DATABASE_NAMESPACE}, ${KEYCLOAK_NAMESPACE}, ${CONTAINER_PLATFORM_PORTAL_NAMESPACE}, ${CONTAINER_PLATFORM_PIPELINE_NAMESPACE}, ${CONTAINER_PLATFORM_SOURCE_CONTROL_NAMESPACE}, ${CONTAINER_PLATFORM_DEFAULT_INGRESS_NAMESPACE}"

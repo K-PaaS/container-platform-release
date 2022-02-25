@@ -1,0 +1,37 @@
+# Default values for paas-ta-container-platform-pipeline-inspection-api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+metadata:
+  name: container-platform-pipeline-inspection-api
+  namespace: ${NAMESPACE}
+
+spec:
+  replicas: 1
+
+image:
+  registry: ${REPOSITORY_URL}
+  project: ${REPOSITORY_PROJECT_NAME}
+  name: paas-ta-container-platform-pipeline-inspection-api
+  tags: ${IMAGE_TAGS}
+  pullPolicy: ${IMAGE_PULL_POLICY}
+  secret: ${IMAGE_PULL_SECRET}
+
+service:
+  type: ${SERVICE_TYPE}
+  protocol: ${SERVICE_PROTOCOL}
+  port: 8085
+  targetPort: 8085
+  nodePort: 30085
+
+env:
+  cp:
+    pipeline:
+      common:
+        api: http://container-platform-pipeline-common-api-service.${NAMESPACE}.svc.cluster.local:8081
+  inspection:
+    server:
+      url: http://paas-ta-container-platform-sonarqube-sonarqube.${NAMESPACE}.svc.cluster.local:9000
+    admin:
+      id: ${INSPECTION_ADMIN_ID}
+      password: ${INSPECTION_ADMIN_PASSWORD}

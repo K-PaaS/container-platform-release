@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.metadata.name }}-deployment
+  labels:
+    app: {{ .Values.metadata.name }}
+  namespace: {{ .Values.metadata.namespace }}
+spec:
+  replicas: {{ .Values.spec.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.metadata.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.metadata.name }}
+    spec:
+      containers:
+        - name: {{ .Values.metadata.name }}
+          image: {{ .Values.image.registry }}/{{ .Values.image.project }}/{{ .Values.image.name }}:{{ .Values.image.tags }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: K8S_API_SERVER
+              value: {{ .Values.env.k8s.api.server | quote }}
+            - name: CONTAINER_PLATFORM_COMMON_API_URI
+              value: {{ .Values.env.cp.common.api.url | quote }}
+            - name: IGNORE_NAMESPACES
+              value: {{ .Values.env.cp.ignoreNamespace | quote }}
+            - name: SERVER_PORT
+              value: {{ .Values.service.port | quote }}
+      imagePullSecrets:
+        - name: {{ .Values.image.secret }}

@@ -1,0 +1,46 @@
+# Default values for keycloak.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+metadata:
+  name: keycloak
+  namespace: ${KEYCLOAK_NAMESPACE}
+
+spec:
+  replicas: ${KEYCLOAK_SESSIONS_COUNT}
+
+image:
+  registry: ${REPOSITORY_URL}
+  project: ${REPOSITORY_PROJECT_NAME}
+  name: paas-ta-container-platform-keycloak
+  tags: ${IMAGE_TAGS}
+  pullPolicy: ${IMAGE_PULL_POLICY}
+  secret: ${IMAGE_PULL_SECRET}
+
+service:
+  type: ${SERVICE_TYPE}
+  protocol: ${SERVICE_PROTOCOL}
+  port: 8080
+  https:
+    port: 8443
+  targetPort: 8080
+  nodePort: 32710
+
+env:
+  database:
+    vendor: "${KEYCLOAK_DB_VENDOR}"
+    schema: "${KEYCLOAK_DB_SCHEMA}"
+    addr: "${DATABASE_URL}"
+    user: "${DATABASE_USER_ID}"
+    password: "${DATABASE_USER_PASSWORD}"
+  admin:
+    username: "${KEYCLOAK_ADMIN_USERNAME}"
+    password: "${KEYCLOAK_ADMIN_PASSWORD}"
+  proxyAddressForwarding:
+    enabled: "true"
+  jgroupsDiscovery:
+    protocol: "dns.DNS_PING"
+    properties: "dns_query=keycloak-cluster.${KEYCLOAK_NAMESPACE}.svc.cluster.local"
+    transport: "tcp"
+  log:
+    level: "${KEYCLOAK_LOG_LEVEL}"

@@ -1,0 +1,31 @@
+# Default values for paas-ta-container-platform-source-control-manager.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+metadata:
+  name: container-platform-source-control-manager
+  namespace: ${NAMESPACE}
+
+spec:
+  replicas: 1
+
+image:
+  registry: ${REPOSITORY_URL}
+  project: ${REPOSITORY_PROJECT_NAME}
+  name: paas-ta-container-platform-source-control-manager
+  tags: ${IMAGE_TAGS}
+  pullPolicy: ${IMAGE_PULL_POLICY}
+  secret: ${IMAGE_PULL_SECRET}
+
+persistent:
+  accessModes: ReadWriteOnce
+  storage:
+    class: ${PERSISTENT_STORAGE_CLASS_NAME}
+    size: 5Gi
+
+service:
+  type: ${SERVICE_TYPE}
+  protocol: ${SERVICE_PROTOCOL}
+  port: 8080
+  targetPort: 8080
+  nodePort: 30092

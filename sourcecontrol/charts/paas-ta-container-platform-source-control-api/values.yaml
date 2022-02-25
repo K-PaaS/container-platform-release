@@ -1,0 +1,34 @@
+# Default values for paas-ta-container-platform-source-control-api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+metadata:
+  name: container-platform-source-control-api
+  namespace: ${NAMESPACE}
+
+spec:
+  replicas: 1
+
+image:
+  registry: ${REPOSITORY_URL}
+  project: ${REPOSITORY_PROJECT_NAME}
+  name: paas-ta-container-platform-source-control-api
+  tags: ${IMAGE_TAGS}
+  pullPolicy: ${IMAGE_PULL_POLICY}
+  secret: ${IMAGE_PULL_SECRET}
+
+service:
+  type: ${SERVICE_TYPE}
+  protocol: ${SERVICE_PROTOCOL}
+  port: 8091
+  targetPort: 8091
+  nodePort: 30091
+
+env:
+  database:
+    url: ${DATABASE_URL}
+    user:
+      id: ${DATABASE_USER_ID}
+      password: ${DATABASE_USER_PASSWORD}
+  scm:
+    url: http://${K8S_MASTER_NODE_IP}:30092

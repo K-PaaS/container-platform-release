@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.metadata.name }}-cluster
+  namespace: {{ .Values.metadata.namespace }}
+spec:
+  selector:
+    app: {{ .Values.metadata.name }}
+  clusterIP: None
+  ports:
+    - protocol: {{ .Values.service.protocol }}
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}

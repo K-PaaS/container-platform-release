@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.metadata.name }}
+  namespace: {{ .Values.metadata.namespace }}
+  labels:
+    app: {{ .Values.metadata.name }}
+spec:
+  replicas: {{ .Values.spec.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.metadata.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.metadata.name }}
+    spec:
+      containers:
+        - name: {{ .Values.metadata.name }}
+          image: {{ .Values.image.registry }}/{{ .Values.image.project }}/{{ .Values.image.name }}:{{ .Values.image.tags }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: DB_VENDOR
+              value: {{ .Values.env.database.vendor | quote }}
+            - name: DB_ADDR
+              value: {{ .Values.env.database.addr | quote }}
+            - name: DB_DATABASE
+              value: {{ .Values.env.database.schema | quote }}
+            - name: DB_USER
+              value: {{ .Values.env.database.user | quote }}
+            - name: DB_PASSWORD
+              value: {{ .Values.env.database.password | quote }}
+            - name: KEYCLOAK_USER
+              value: {{ .Values.env.admin.username | quote }}
+            - name: KEYCLOAK_PASSWORD
+              value: {{ .Values.env.admin.password | quote }}
+            - name: PROXY_ADDRESS_FORWARDING
+              value: {{ .Values.env.proxyAddressForwarding.enabled | quote }}
+            - name: JGROUPS_DISCOVERY_PROTOCOL
+              value: {{ .Values.env.jgroupsDiscovery.protocol | quote }}
+            - name: JGROUPS_DISCOVERY_PROPERTIES
+              value: {{ .Values.env.jgroupsDiscovery.properties | quote }}
+            - name: JGROUPS_TRANSPORT_STACK
+              value: {{ .Values.env.jgroupsDiscovery.transport | quote }}
+            - name: KEYCLOAK_LOGLEVEL
+              value: {{ .Values.env.log.level | quote }}
+            - name: CACHE_OWNERS_COUNT
+              value: {{ .Values.spec.replicas | quote }}
+            - name: CACHE_OWNERS_AUTH_SESSIONS_COUNT
+              value: {{ .Values.spec.replicas | quote }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+            - name: https
+              containerPort: {{ .Values.service.https.port }}
+      imagePullSecrets:
+        - name: {{ .Values.image.secret }}

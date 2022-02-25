@@ -1,0 +1,7 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: paas-ta-container-platform-nfs-storageclass
+provisioner: paas-ta-container-platform-nfs-provisioner
+parameters:
+  archiveOnDelete: "false"

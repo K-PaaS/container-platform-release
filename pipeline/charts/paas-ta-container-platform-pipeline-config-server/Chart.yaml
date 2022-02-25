@@ -1,0 +1,6 @@
+apiVersion: v2
+appVersion: 1.16.0
+description: A Helm chart for PaaS-TA Container Platform Pipeline Config Server
+name: paas-ta-container-platform-pipeline-config-server
+type: application
+version: "1.2"

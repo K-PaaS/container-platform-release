@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.metadata.name }}-deployment
+  labels:
+    app: {{ .Values.metadata.name }}
+  namespace: {{ .Values.metadata.namespace }}
+spec:
+  replicas: {{ .Values.spec.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.metadata.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.metadata.name }}
+    spec:
+      containers:
+        - name: {{ .Values.metadata.name }}
+          image: {{ .Values.image.registry }}/{{ .Values.image.project }}/{{ .Values.image.name }}:{{ .Values.image.tags }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: KEYCLOAK_URI
+              value: {{ .Values.env.keycloak.url | quote }}
+            - name: KEYCLOAK_CP_REALM
+              value: {{ .Values.env.keycloak.realm | quote }}
+            - name: KEYCLOAK_CP_CLIENT_ID
+              value: {{ .Values.env.keycloak.client.id | quote }}
+            - name: KEYCLOAK_CP_CLIENT_SECRET
+              value: {{ .Values.env.keycloak.client.secret | quote }}
+            - name: CONTAINER_PLATFORM_API_URI
+              value: {{ .Values.env.cp.api.url | quote }}
+            - name: CONTAINER_PLATFORM_COMMON_API_URI
+              value: {{ .Values.env.cp.common.api.url | quote }}
+            - name: SERVER_PORT
+              value: {{ .Values.service.port | quote }}
+      imagePullSecrets:
+        - name: {{ .Values.image.secret }}

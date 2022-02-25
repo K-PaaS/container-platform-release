@@ -1,0 +1,46 @@
+# Default values for paas-ta-container-platform-pipeline-ui.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+metadata:
+  name: container-platform-pipeline-ui
+  namespace: ${NAMESPACE}
+
+spec:
+  replicas: 1
+
+image:
+  registry: ${REPOSITORY_URL}
+  project: ${REPOSITORY_PROJECT_NAME}
+  name: paas-ta-container-platform-pipeline-ui
+  tags: ${IMAGE_TAGS}
+  pullPolicy: ${IMAGE_PULL_POLICY}
+  secret: ${IMAGE_PULL_SECRET}
+
+service:
+  type: ${SERVICE_TYPE}
+  protocol: ${SERVICE_PROTOCOL}
+  port: 8084
+  targetPort: 8084
+  nodePort: 30084
+
+env:
+  cp:
+    pipeline:
+      api: http://container-platform-pipeline-api-service.${NAMESPACE}.svc.cluster.local:8082
+      common:
+        api: http://container-platform-pipeline-common-api-service.${NAMESPACE}.svc.cluster.local:8081
+      inspection:
+        api: http://container-platform-pipeline-inspection-api-service.${NAMESPACE}.svc.cluster.local:8085
+  keycloak:
+    url: http://${KEYCLOAK_URL}
+    realm: ${KEYCLOAK_CP_REALM}
+    client:
+      id: ${KEYCLOAK_CP_CLIENT_ID}
+      secret: ${KEYCLOAK_CP_CLIENT_SECRET}
+      role: ${KEYCLOAK_CLUSTER_ADMIN_ROLE}
+  config:
+    server:
+      url: http://${K8S_MASTER_NODE_IP}:30088
+
+

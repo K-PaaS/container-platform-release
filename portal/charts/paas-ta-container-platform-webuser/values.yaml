@@ -1,0 +1,41 @@
+# Default values for paas-ta-container-platform-webuser.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+metadata:
+  name: container-platform-webuser
+  namespace: ${CONTAINER_PLATFORM_PORTAL_NAMESPACE}
+
+spec:
+  replicas: 1
+
+image:
+  registry: ${REPOSITORY_URL}
+  project: ${REPOSITORY_PROJECT_NAME}
+  name: paas-ta-container-platform-webuser
+  tags: ${IMAGE_TAGS}
+  pullPolicy: ${IMAGE_PULL_POLICY}
+  secret: ${IMAGE_PULL_SECRET}
+
+service:
+  type: ${SERVICE_TYPE}
+  protocol: ${SERVICE_PROTOCOL}
+  port: 8091
+  targetPort: 8091
+  nodePort: 32702
+
+env:
+  keycloak:
+    url: "http://${KEYCLOAK_URL}"
+    realm: "${KEYCLOAK_CP_REALM}"
+    client:
+      id: "${KEYCLOAK_CP_CLIENT_ID}"
+      secret: "${KEYCLOAK_CP_CLIENT_SECRET}"
+  cp:
+    common:
+      api:
+        url: "http://container-platform-common-api-service.${CONTAINER_PLATFORM_PORTAL_NAMESPACE}.svc.cluster.local:3334"
+    api:
+      url: "http://container-platform-api-service.${CONTAINER_PLATFORM_PORTAL_NAMESPACE}.svc.cluster.local:3333"
+    provider:
+      type: "${CONTAINER_PLATFORM_PORTAL_PROVIDER_TYPE}"

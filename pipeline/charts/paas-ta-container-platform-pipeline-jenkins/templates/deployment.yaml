@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.metadata.name }}-deployment
+  labels:
+    app: {{ .Values.metadata.name }}
+  namespace: {{ .Values.metadata.namespace }}
+spec:
+  replicas: {{ .Values.spec.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.metadata.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.metadata.name }}
+    spec:
+      volumes:
+        - name: {{ .Values.metadata.name }}-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.metadata.name }}-pv
+      containers:
+        - name: {{ .Values.metadata.name }}
+          image: {{ .Values.image.registry }}/{{ .Values.image.project }}/{{ .Values.image.name }}:{{ .Values.image.tags }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          securityContext:
+              privileged: {{ .Values.image.isPrivileged }}
+          env:
+            - name: HARBOR_URL
+              value: {{ .Values.env.harbor.url | quote }}
+            - name: JENKINS_URL
+              value: {{ .Values.env.jenkins.url | quote }}
+            - name: SONARQUBE_URL
+              value: {{ .Values.env.sonarqube.url | quote }}
+          volumeMounts:
+            - mountPath: "/var/jenkins_home"
+              name: {{ .Values.metadata.name }}-volume
+      imagePullSecrets:
+        - name: {{ .Values.image.secret }}

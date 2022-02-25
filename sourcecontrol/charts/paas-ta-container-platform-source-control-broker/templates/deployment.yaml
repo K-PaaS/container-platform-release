@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.metadata.name }}-deployment
+  labels:
+    app: {{ .Values.metadata.name }}
+  namespace: {{ .Values.metadata.namespace }}
+spec:
+  replicas: {{ .Values.spec.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.metadata.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.metadata.name }}
+    spec:
+      containers:
+        - name: {{ .Values.metadata.name }}
+          image: {{ .Values.image.registry }}/{{ .Values.image.project }}/{{ .Values.image.name }}:{{ .Values.image.tags }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: DATABASE_URL
+              value: {{ .Values.env.database.url | quote }}
+            - name: DATABASE_USER_ID
+              value: {{ .Values.env.database.user.id | quote }}
+            - name: DATABASE_USER_PASSWORD
+              value: {{ .Values.env.database.user.password | quote }}
+            - name: SCM_DASHBOARD_URL
+              value: {{ .Values.env.cp.sourcecontrol.dashboard.url | quote }}
+            - name: CONTAINER_PLATFORM_SOURCE_CONTROL_API_URI
+              value: {{ .Values.env.cp.sourcecontrol.api.uri | quote }}
+            - name: SCM_MANAGER_URL
+              value: {{ .Values.env.cp.sourcecontrol.manager.url | quote }}
+            - name: KEYCLOAK_ADMIN_ID
+              value: {{ .Values.env.keycloak.admin.id | quote }}
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              value: {{ .Values.env.keycloak.admin.password | quote }}
+            - name: KEYCLOAK_URL
+              value: {{ .Values.env.keycloak.url | quote }}
+            - name: KEYCLOAK_CP_REALM
+              value: {{ .Values.env.keycloak.realm.name | quote }}
+            - name: KEYCLOAK_IDENTITY_PROVIDER_ID
+              value: {{ .Values.env.keycloak.identity.provider.id | quote }}
+            - name: KEYCLOAK_CLUSTER_ADMIN_GROUP
+              value: {{ .Values.env.keycloak.cluster.admin.group | quote }}
+            - name: KEYCLOAK_CLUSTER_ADMIN_ROLE
+              value: {{ .Values.env.keycloak.cluster.admin.role | quote }}
+
+      imagePullSecrets:
+        - name: {{ .Values.image.secret }}

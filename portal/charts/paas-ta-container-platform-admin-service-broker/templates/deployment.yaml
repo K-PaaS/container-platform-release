@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.metadata.name }}-deployment
+  labels:
+    app: {{ .Values.metadata.name }}
+  namespace: {{ .Values.metadata.namespace }}
+spec:
+  replicas: {{ .Values.spec.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.metadata.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.metadata.name }}
+    spec:
+      containers:
+        - name: {{ .Values.metadata.name }}
+          image: {{ .Values.image.registry }}/{{ .Values.image.project }}/{{ .Values.image.name }}:{{ .Values.image.tags }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: DATABASE_URL
+              value: {{ .Values.env.database.addr | quote }}
+            - name: DATABASE_USER_ID
+              value: {{ .Values.env.database.user | quote }}
+            - name: DATABASE_USER_PASSWORD
+              value: {{ .Values.env.database.password | quote }}
+            - name: K8S_API_SERVER
+              value: {{ .Values.env.k8s.api.server | quote }}
+            - name: K8S_AUTH_BEARER_TOKEN
+              value: {{ .Values.env.k8s.api.token | quote }}
+            - name: KEYCLOAK_URI
+              value: {{ .Values.env.keycloak.url | quote }}
+            - name: KEYCLOAK_CP_REALM
+              value: {{ .Values.env.keycloak.realm | quote }}
+            - name: KEYCLOAK_ADMIN_USERNAME
+              value: {{ .Values.env.keycloak.admin.username | quote }}
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              value: {{ .Values.env.keycloak.admin.password | quote }}
+            - name: CONTAINER_PLATFORM_API_URI
+              value: {{ .Values.env.cp.api.url | quote }}
+            - name: CONTAINER_PLATFORM_COMMON_API_URI
+              value: {{ .Values.env.cp.common.api.url | quote }}
+            - name: CONTAINER_PLATFORM_ADMIN_PORTAL_URI
+              value: {{ .Values.env.cp.portal.url | quote }}
+            - name: CONTAINER_PLATFORM_ADMIN_PORTAL_ORG
+              value: {{ .Values.env.cp.admin.org | quote }}
+            - name: SERVER_PORT
+              value: {{ .Values.service.port | quote }}
+      imagePullSecrets:
+        - name: {{ .Values.image.secret }}

@@ -1,0 +1,58 @@
+# Default values for paas-ta-container-platform-pipeline-broker
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+metadata:
+  name: container-platform-pipeline-broker
+  namespace: ${NAMESPACE}
+
+spec:
+  replicas: 1
+
+image:
+  registry: ${REPOSITORY_URL}
+  project: ${REPOSITORY_PROJECT_NAME}
+  name: paas-ta-container-platform-pipeline-broker
+  tags: ${IMAGE_TAGS}
+  pullPolicy: ${IMAGE_PULL_POLICY}
+  secret: ${IMAGE_PULL_SECRET}
+
+service:
+  type: ${SERVICE_TYPE}
+  protocol: ${SERVICE_PROTOCOL}
+  port: 8083
+  targetPort: 8083
+  nodePort: 30083
+
+env:
+  cf:
+    api:
+      url: ${CF_API_URL}
+  database:
+    url: ${DATABASE_URL}
+    user:
+      id: ${DATABASE_USER_ID}
+      password: ${DATABASE_USER_PASSWORD}
+  cp:
+    pipeline:
+      common:
+        api: http://container-platform-pipeline-common-api-service.${NAMESPACE}.svc.cluster.local:8081
+      dashboard:
+        url: http://${K8S_MASTER_NODE_IP}:30084/dashboard/[SUID]/
+  ci:
+    server:
+      url: http://${K8S_MASTER_NODE_IP}:30086
+  keycloak:
+    url: http://${KEYCLOAK_URL}/auth
+    admin:
+      id: ${KEYCLOAK_ADMIN_ID}
+      password: ${KEYCLOAK_ADMIN_PASSWORD}
+    realm:
+      name: ${KEYCLOAK_CP_REALM}
+    identity:
+      provider:
+        id: ${KEYCLOAK_IDENTITY_PROVIDER_ID}
+    cluster:
+      admin:
+        group: ${KEYCLOAK_CLUSTER_ADMIN_GROUP}
+        role: ${KEYCLOAK_CLUSTER_ADMIN_ROLE}

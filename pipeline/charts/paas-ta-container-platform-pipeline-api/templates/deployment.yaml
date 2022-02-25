@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.metadata.name }}-deployment
+  labels:
+    app: {{ .Values.metadata.name }}
+  namespace: {{ .Values.metadata.namespace }}
+spec:
+  replicas: {{ .Values.spec.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.metadata.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.metadata.name }}
+    spec:
+      containers:
+        - name: {{ .Values.metadata.name }}
+          image: {{ .Values.image.registry }}/{{ .Values.image.project }}/{{ .Values.image.name }}:{{ .Values.image.tags }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: CONTAINER_PLATFORM_PIPELINE_COMMON_API_URI
+              value: {{ .Values.env.cp.pipeline.common.api | quote }}
+            - name: CONTAINER_PLATFORM_PIPELINE_INSPECTION_API_URI
+              value: {{ .Values.env.cp.pipeline.inspection.api | quote }}
+            - name: CONTAINER_PLATFORM_PIPELINE_UI_URI
+              value: {{ .Values.env.cp.pipeline.ui.uri | quote }}
+            - name: HARBOR_API_URL
+              value: {{ .Values.env.harbor.url | quote }}
+            - name: HARBOR_ADMIN_USER
+              value: {{ .Values.env.harbor.admin.id | quote }}
+            - name: HARBOR_ADMIN_PASSWORD
+              value: {{ .Values.env.harbor.admin.password | quote }}
+            - name: KEYCLOAK_URL
+              value: {{ .Values.env.keycloak.url | quote }}
+            - name: KEYCLOAK_ADMIN_ID
+              value: {{ .Values.env.keycloak.admin.id | quote }}
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              value: {{ .Values.env.keycloak.admin.password | quote }}
+      imagePullSecrets:
+        - name: {{ .Values.image.secret }}

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.metadata.name }}-deployment
+  labels:
+    app: {{ .Values.metadata.name }}
+  namespace: {{ .Values.metadata.namespace }}
+spec:
+  replicas: {{ .Values.spec.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.metadata.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.metadata.name }}
+    spec:
+      containers:
+        - name: {{ .Values.metadata.name }}
+          image: {{ .Values.image.registry }}/{{ .Values.image.project }}/{{ .Values.image.name }}:{{ .Values.image.tags }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: CONTAINER_PLATFORM_SOURCE_CONTROL_API_URI
+              value: {{ .Values.env.cp.sourcecontrol.api | quote }}
+            - name: KEYCLOAK_URL
+              value: {{ .Values.env.keycloak.url | quote }}
+            - name: KEYCLOAK_CP_CLIENT_ID
+              value: {{ .Values.env.keycloak.client.id | quote }}
+            - name: KEYCLOAK_CP_CLIENT_SECRET
+              value: {{ .Values.env.keycloak.client.secret | quote }}
+            - name: KEYCLOAK_CLUSTER_ADMIN_ROLE
+              value: {{ .Values.env.keycloak.client.role | quote }}
+            - name: KEYCLOAK_CP_REALM
+              value: {{ .Values.env.keycloak.realm | quote }}
+      imagePullSecrets:
+        - name: {{ .Values.image.secret }}

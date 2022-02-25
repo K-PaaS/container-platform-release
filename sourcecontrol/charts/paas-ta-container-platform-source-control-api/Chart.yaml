@@ -1,0 +1,6 @@
+apiVersion: v2
+appVersion: 1.16.0
+description: A Helm chart for PaaS-TA Container Platform Source Control Api
+name: paas-ta-container-platform-source-control-api
+type: application
+version: "1.2"

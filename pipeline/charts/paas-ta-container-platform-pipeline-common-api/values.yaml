@@ -1,0 +1,36 @@
+# Default values for paas-ta-container-platform-pipeline-common-api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+metadata:
+  name: container-platform-pipeline-common-api
+  namespace: ${NAMESPACE}
+
+spec:
+  replicas: 1
+
+
+image:
+  registry: ${REPOSITORY_URL}
+  project: ${REPOSITORY_PROJECT_NAME}
+  name: paas-ta-container-platform-pipeline-common-api
+  tags: ${IMAGE_TAGS}
+  pullPolicy: ${IMAGE_PULL_POLICY}
+  secret: ${IMAGE_PULL_SECRET}
+
+service:
+  type: ${SERVICE_TYPE}
+  protocol: ${SERVICE_PROTOCOL}
+  port: 8081
+  targetPort: 8081
+  nodePort: 30081
+
+env:
+  cp:
+    pipeline:
+      api: http://container-platform-pipeline-api-service.${NAMESPACE}.svc.cluster.local:8082
+  database:
+    url: ${DATABASE_URL}
+    user:
+      id: ${DATABASE_USER_ID}
+      password: ${DATABASE_USER_PASSWORD}
