@@ -20,9 +20,8 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.externalPort }}
-      targetPort: http
+      targetPort: {{ .Values.service.externalPort }}
       protocol: TCP
-      name: http
       {{- if .Values.service.nodePort }}
       nodePort: {{ .Values.service.nodePort }}
       {{- end }}

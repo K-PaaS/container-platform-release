@@ -34,9 +34,8 @@ spec:
   clusterIP: {{ $serviceClusterIP }}
   {{- end }}
   ports:
-    - name: tcp-postgresql
-      port: {{ template "postgresql.port" . }}
-      targetPort: tcp-postgresql
+    - port: {{ template "postgresql.port" . }}
+      targetPort: {{ template "postgresql.port" . }}
       {{- if $serviceNodePort }}
       nodePort: {{ $serviceNodePort }}
       {{- end }}

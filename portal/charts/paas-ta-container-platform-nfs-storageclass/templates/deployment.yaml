@@ -14,6 +14,13 @@ spec:
       labels:
         app: nfs-pod-provisioner
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/edge
+                operator: DoesNotExist
       serviceAccountName: nfs-pod-provisioner-sa # name of service account
       containers:
         - name: nfs-pod-provisioner

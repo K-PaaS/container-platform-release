@@ -31,10 +31,9 @@ spec:
   loadBalancerSourceRanges: {{- toYaml .Values.primary.service.loadBalancerSourceRanges | nindent 4 }}
   {{- end }}
   ports:
-    - name: mysql
-      port: {{ .Values.primary.service.port }}
+    - port: {{ .Values.primary.service.port }}
       protocol: TCP
-      targetPort: mysql
+      targetPort: {{ .Values.primary.service.port }}
       {{- if (and (or (eq .Values.primary.service.type "NodePort") (eq .Values.primary.service.type "LoadBalancer")) .Values.primary.service.nodePort) }}
       nodePort: {{ .Values.primary.service.nodePort }}
       {{- else if eq .Values.primary.service.type "ClusterIP" }}

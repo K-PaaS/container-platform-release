@@ -394,7 +394,13 @@ nginx:
   #    cpu: 100m
   nodeSelector: {}
   tolerations: []
-  affinity: {}
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/edge
+            operator: DoesNotExist
   ## Additional deployment annotations
   podAnnotations: {}
   ## The priority class to run the pod as
