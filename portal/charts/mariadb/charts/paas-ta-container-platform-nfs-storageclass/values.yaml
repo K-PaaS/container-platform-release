@@ -1,0 +1,18 @@
+# Default values for paas-ta-container-platform-nfs-storageclass.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+metadata:
+  namespace: ${NFS_NAMESPACE}
+
+spec:
+  replicas: ${REPLICAS_COUNT}
+
+containers:
+  image: ${CONTAINERS_IMAGE}
+
+env:
+  nfs:
+    server:
+      ip: ${NFS_SERVER_IP}
+    path: ${NFS_PATH}
