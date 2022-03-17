@@ -421,7 +421,13 @@ portal:
   #    cpu: 100m
   nodeSelector: {}
   tolerations: []
-  affinity: {}
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/edge
+            operator: DoesNotExist
   ## Additional deployment annotations
   podAnnotations: {}
   ## The priority class to run the pod as
@@ -446,7 +452,13 @@ core:
   #    cpu: 100m
   nodeSelector: {}
   tolerations: []
-  affinity: {}
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/edge
+            operator: DoesNotExist
   ## Additional deployment annotations
   podAnnotations: {}
   # Secret is used when core server communicates with other components.
@@ -487,7 +499,13 @@ jobservice:
   #     cpu: 100m
   nodeSelector: {}
   tolerations: []
-  affinity: {}
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/edge
+            operator: DoesNotExist
   ## Additional deployment annotations
   podAnnotations: {}
   # Secret is used when job service communicates with other components.
@@ -522,7 +540,13 @@ registry:
   replicas: 1
   nodeSelector: {}
   tolerations: []
-  affinity: {}
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/edge
+            operator: DoesNotExist
   ## Additional deployment annotations
   podAnnotations: {}
   ## The priority class to run the pod as
@@ -572,7 +596,13 @@ chartmuseum:
   #    cpu: 100m
   nodeSelector: {}
   tolerations: []
-  affinity: {}
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/edge
+            operator: DoesNotExist
   ## Additional deployment annotations
   podAnnotations: {}
   ## The priority class to run the pod as
@@ -633,7 +663,13 @@ trivy:
       memory: 1Gi
   nodeSelector: {}
   tolerations: []
-  affinity: {}
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/edge
+            operator: DoesNotExist
   ## Additional deployment annotations
   podAnnotations: {}
   ## The priority class to run the pod as
@@ -656,7 +692,13 @@ notary:
     #    cpu: 100m
     nodeSelector: {}
     tolerations: []
-    affinity: {}
+    affinity:
+      nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/edge
+            operator: DoesNotExist
     ## Additional deployment annotations
     podAnnotations: {}
     ## The priority class to run the pod as
@@ -676,7 +718,13 @@ notary:
     #    cpu: 100m
     nodeSelector: {}
     tolerations: []
-    affinity: {}
+    affinity:
+      nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/edge
+            operator: DoesNotExist
     ## Additional deployment annotations
     podAnnotations: {}
     ## The priority class to run the pod as
@@ -713,7 +761,13 @@ database:
     #    cpu: 100m
     nodeSelector: {}
     tolerations: []
-    affinity: {}
+    affinity:
+      nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/edge
+            operator: DoesNotExist
     ## The priority class to run the pod as
     priorityClassName:
     initContainer:
@@ -771,7 +825,13 @@ redis:
     #    cpu: 100m
     nodeSelector: {}
     tolerations: []
-    affinity: {}
+    affinity:
+      nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/edge
+            operator: DoesNotExist
     ## The priority class to run the pod as
     priorityClassName:
   external:
@@ -807,7 +867,13 @@ exporter:
     tag: v2.3.4
   nodeSelector: {}
   tolerations: []
-  affinity: {}
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/edge
+            operator: DoesNotExist
   cacheDuration: 23
   cacheCleanInterval: 14400
   ## The priority class to run the pod as

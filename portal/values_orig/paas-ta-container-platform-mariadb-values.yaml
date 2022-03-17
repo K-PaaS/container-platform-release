@@ -570,7 +570,13 @@ secondary:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
   ## Note: podAffinityPreset, podAntiAffinityPreset, and  nodeAffinityPreset will be ignored when it's set
   ##
-  affinity: {}
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/edge
+            operator: DoesNotExist
   ## @param secondary.nodeSelector Node labels for MariaDB secondary pods assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
