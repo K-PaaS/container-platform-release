@@ -694,11 +694,11 @@ notary:
     tolerations: []
     affinity:
       nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: node-role.kubernetes.io/edge
-            operator: DoesNotExist
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: node-role.kubernetes.io/edge
+              operator: DoesNotExist
     ## Additional deployment annotations
     podAnnotations: {}
     ## The priority class to run the pod as
@@ -720,11 +720,11 @@ notary:
     tolerations: []
     affinity:
       nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: node-role.kubernetes.io/edge
-            operator: DoesNotExist
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: node-role.kubernetes.io/edge
+              operator: DoesNotExist
     ## Additional deployment annotations
     podAnnotations: {}
     ## The priority class to run the pod as
@@ -763,11 +763,11 @@ database:
     tolerations: []
     affinity:
       nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: node-role.kubernetes.io/edge
-            operator: DoesNotExist
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: node-role.kubernetes.io/edge
+              operator: DoesNotExist
     ## The priority class to run the pod as
     priorityClassName:
     initContainer:
@@ -827,11 +827,11 @@ redis:
     tolerations: []
     affinity:
       nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: node-role.kubernetes.io/edge
-            operator: DoesNotExist
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: node-role.kubernetes.io/edge
+              operator: DoesNotExist
     ## The priority class to run the pod as
     priorityClassName:
   external:
