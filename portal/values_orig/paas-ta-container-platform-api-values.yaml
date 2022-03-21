@@ -32,4 +32,4 @@ env:
     common:
       api:
         url: "http://container-platform-common-api-service.{CONTAINER_PLATFORM_PORTAL_NAMESPACE}.svc.cluster.local:3334"
-    ignoreNamespace: "kubernetes-dashboard, kube-node-lease, kube-public, kube-system, default, paas-ta-container-platform-temp-namespace, {NFS_NAMESPACE}, {REPOSITORY_NAMESPACE}, {DATABASE_NAMESPACE}, {KEYCLOAK_NAMESPACE}, {CONTAINER_PLATFORM_PORTAL_NAMESPACE}, {CONTAINER_PLATFORM_PIPELINE_NAMESPACE}, {CONTAINER_PLATFORM_SOURCE_CONTROL_NAMESPACE}, {CONTAINER_PLATFORM_DEFAULT_INGRESS_NAMESPACE}"
+    ignoreNamespace: "kubernetes-dashboard, kube-node-lease, kube-public, kube-system, default, paas-ta-container-platform-temp-namespace, kubeedge, {NFS_NAMESPACE}, {REPOSITORY_NAMESPACE}, {DATABASE_NAMESPACE}, {KEYCLOAK_NAMESPACE}, {CONTAINER_PLATFORM_PORTAL_NAMESPACE}, {CONTAINER_PLATFORM_PIPELINE_NAMESPACE}, {CONTAINER_PLATFORM_SOURCE_CONTROL_NAMESPACE}, {CONTAINER_PLATFORM_DEFAULT_INGRESS_NAMESPACE}"
