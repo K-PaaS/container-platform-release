@@ -13,7 +13,7 @@ K8S_API_SERVER_PORT="6443"                                                      
 
 # STORAGECLASS
 NFS_NAMESPACE="nfs-storageclass"                                                             # NFS storageclass namespace
-NFS_STORAGECLASS_NAME="paas-ta-container-platform-nfs-storageclass"                          # NFS storageclass name
+NFS_STORAGECLASS_NAME="container-platform-nfs-storageclass"                          # NFS storageclass name
 
 # SERVICE
 SERVICE_TYPE="NodePort"                                                                      # Service type in kubernetes
@@ -24,14 +24,14 @@ REPOSITORY_NAMESPACE="harbor"                                                   
 REPOSITORY_URL="10.100.1.161:30002"                                                   # Repository url
 REPOSITORY_USERNAME="admin"                                                                  # Repository admin username (e.g. admin)
 REPOSITORY_PASSWORD="Harbor12345"                                                            # Repository admin password (e.g. Harbor12345)
-REPOSITORY_PROJECT_NAME="paas-ta-container-platform-repository"                              # Repository project name
+REPOSITORY_PROJECT_NAME="container-platform-repository"                              # Repository project name
 IMAGE_TAGS="latest"                                                                          # Image tag
 IMAGE_PULL_POLICY="Always"                                                                   # Image pull policy
-IMAGE_PULL_SECRET="paas-ta-container-platform-image-secret"                                  # Image pull secret
+IMAGE_PULL_SECRET="container-platform-image-secret"                                  # Image pull secret
 
 # MARIADB
 DATABASE_NAMESPACE="mariadb"                                                                 # Database namespace
-DATABASE_URL="paas-ta-container-platform-mariadb.mariadb.svc.cluster.local:3306"             # Database url
+DATABASE_URL="container-platform-mariadb.mariadb.svc.cluster.local:3306"             # Database url
 DATABASE_USER_ID="cp-admin"                                                                  # Database user name (e.g. cp-admin)
 DATABASE_USER_PASSWORD="Paasta!2022"                                                         # Database user password (e.g. Paasta!2022)
 
@@ -49,10 +49,10 @@ KEYCLOAK_CP_CLIENT_ID="container-platform-client"                               
 KEYCLOAK_CP_CLIENT_SECRET="c7de06cf-01c4-4d45-b462-595fcddd19fe"                             # Keycloak client secret for container platform portal
 
 # CONTAINER-PLATFORM-PORTAL
-CONTAINER_PLATFORM_PORTAL_NAMESPACE="paas-ta-container-platform-portal"                      # Container platform portal namespace
-CONTAINER_PLATFORM_PORTAL_PROVIDER_TYPE="paas-ta-container-platform-portal-$PROVIDER_TYPE"   # Container platform portal provider type
+CONTAINER_PLATFORM_PORTAL_NAMESPACE="container-platform-portal"                      # Container platform portal namespace
+CONTAINER_PLATFORM_PORTAL_PROVIDER_TYPE="container-platform-portal-$PROVIDER_TYPE"   # Container platform portal provider type
 
 # CONTAINER-PLATFORM-SERVICE
-CONTAINER_PLATFORM_PIPELINE_NAMESPACE="paas-ta-container-platform-pipeline"                  # Container platform service pipeline namespace
-CONTAINER_PLATFORM_SOURCE_CONTROL_NAMESPACE="paas-ta-container-platform-source-control"      # Container platform service source control namespace
+CONTAINER_PLATFORM_PIPELINE_NAMESPACE="container-platform-pipeline"                  # Container platform service pipeline namespace
+CONTAINER_PLATFORM_SOURCE_CONTROL_NAMESPACE="container-platform-source-control"      # Container platform service source control namespace
 CONTAINER_PLATFORM_DEFAULT_INGRESS_NAMESPACE="ingress-nginx"                                 # Container platform default ingress namespace

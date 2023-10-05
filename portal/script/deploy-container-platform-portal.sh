@@ -47,11 +47,11 @@ find ../values -name "*.yaml" -exec sed -i "s/{CONTAINER_PLATFORM_DEFAULT_INGRES
 
 # 1. Deploy the NFS StorageClass
 kubectl create namespace $NFS_NAMESPACE
-sudo helm install -f ../values/paas-ta-container-platform-nfs-storageclass-values.yaml paas-ta-container-platform-nfs-storageclass ../charts/paas-ta-container-platform-nfs-storageclass-chart.tgz --namespace $NFS_NAMESPACE
+sudo helm install -f ../values/container-platform-nfs-storageclass-values.yaml container-platform-nfs-storageclass ../charts/container-platform-nfs-storageclass-chart.tgz --namespace $NFS_NAMESPACE
 
 # 2. Deploy the Harbor
 kubectl create namespace $REPOSITORY_NAMESPACE
-sudo helm install -f ../values/paas-ta-container-platform-harbor-values.yaml paas-ta-container-platform-harbor ../charts/paas-ta-container-platform-harbor-chart.tgz --namespace $REPOSITORY_NAMESPACE
+sudo helm install -f ../values/container-platform-harbor-values.yaml container-platform-harbor ../charts/container-platform-harbor-chart.tgz --namespace $REPOSITORY_NAMESPACE
 
 REPOSITORY_HTTP_CODE=$(curl -L -k -s -o /dev/null -w "%{http_code}\n" $REPOSITORY_URL/api/v2.0/projects)
 while :
@@ -74,52 +74,52 @@ sudo helm plugin install https://github.com/chartmuseum/helm-push.git
 
 # 4. Push the Keycloak Image in Harbor
 cd ../keycloak
-sudo podman build --tag $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/paas-ta-container-platform-keycloak:latest .
-sudo podman push $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/paas-ta-container-platform-keycloak
+sudo podman build --tag $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/container-platform-keycloak:latest .
+sudo podman push $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/container-platform-keycloak
 cd ../script
 
 
 # 5. Push the Container Platform Portal Image in Harbor
-sudo podman load -i ../images/paas-ta-container-platform-api-image.tar.gz
-sudo podman load -i ../images/paas-ta-container-platform-common-api-image.tar.gz
-sudo podman load -i ../images/paas-ta-container-platform-webadmin-image.tar.gz
-sudo podman load -i ../images/paas-ta-container-platform-webuser-image.tar.gz
-if [ "$CONTAINER_PLATFORM_PORTAL_PROVIDER_TYPE" == "paas-ta-container-platform-portal-service" ]; then
-   sudo podman load -i ../images/paas-ta-container-platform-admin-service-broker-image.tar.gz
-   sudo podman load -i ../images/paas-ta-container-platform-user-service-broker-image.tar.gz
+sudo podman load -i ../images/container-platform-api-image.tar.gz
+sudo podman load -i ../images/container-platform-common-api-image.tar.gz
+sudo podman load -i ../images/container-platform-webadmin-image.tar.gz
+sudo podman load -i ../images/container-platform-webuser-image.tar.gz
+if [ "$CONTAINER_PLATFORM_PORTAL_PROVIDER_TYPE" == "container-platform-portal-service" ]; then
+   sudo podman load -i ../images/container-platform-admin-service-broker-image.tar.gz
+   sudo podman load -i ../images/container-platform-user-service-broker-image.tar.gz
 fi
 
-sudo podman tag localhost:5000/container-platform/paas-ta-container-platform-api $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/paas-ta-container-platform-api
-sudo podman tag localhost:5000/container-platform/paas-ta-container-platform-common-api $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/paas-ta-container-platform-common-api
-sudo podman tag localhost:5000/container-platform/paas-ta-container-platform-webadmin $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/paas-ta-container-platform-webadmin
-sudo podman tag localhost:5000/container-platform/paas-ta-container-platform-webuser $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/paas-ta-container-platform-webuser
-if [ "$CONTAINER_PLATFORM_PORTAL_PROVIDER_TYPE" == "paas-ta-container-platform-portal-service" ]; then
-   sudo podman tag localhost:5000/container-platform/paas-ta-container-platform-admin-service-broker $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/paas-ta-container-platform-admin-service-broker
-   sudo podman tag localhost:5000/container-platform/paas-ta-container-platform-user-service-broker $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/paas-ta-container-platform-user-service-broker
+sudo podman tag localhost:5000/container-platform/container-platform-api $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/container-platform-api
+sudo podman tag localhost:5000/container-platform/container-platform-common-api $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/container-platform-common-api
+sudo podman tag localhost:5000/container-platform/container-platform-webadmin $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/container-platform-webadmin
+sudo podman tag localhost:5000/container-platform/container-platform-webuser $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/container-platform-webuser
+if [ "$CONTAINER_PLATFORM_PORTAL_PROVIDER_TYPE" == "container-platform-portal-service" ]; then
+   sudo podman tag localhost:5000/container-platform/container-platform-admin-service-broker $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/container-platform-admin-service-broker
+   sudo podman tag localhost:5000/container-platform/container-platform-user-service-broker $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/container-platform-user-service-broker
 fi
 
-sudo podman push $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/paas-ta-container-platform-api
-sudo podman push $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/paas-ta-container-platform-common-api
-sudo podman push $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/paas-ta-container-platform-webadmin
-sudo podman push $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/paas-ta-container-platform-webuser
-if [ "$CONTAINER_PLATFORM_PORTAL_PROVIDER_TYPE" == "paas-ta-container-platform-portal-service" ]; then
-   sudo podman push $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/paas-ta-container-platform-admin-service-broker
-   sudo podman push $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/paas-ta-container-platform-user-service-broker
+sudo podman push $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/container-platform-api
+sudo podman push $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/container-platform-common-api
+sudo podman push $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/container-platform-webadmin
+sudo podman push $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/container-platform-webuser
+if [ "$CONTAINER_PLATFORM_PORTAL_PROVIDER_TYPE" == "container-platform-portal-service" ]; then
+   sudo podman push $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/container-platform-admin-service-broker
+   sudo podman push $REPOSITORY_URL/$REPOSITORY_PROJECT_NAME/container-platform-user-service-broker
 fi
 
 
 # 6. Push the Helm Chart in Harbor
-sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/paas-ta-container-platform-nfs-storageclass-chart.tgz $REPOSITORY_PROJECT_NAME
-sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/paas-ta-container-platform-harbor-chart.tgz $REPOSITORY_PROJECT_NAME
-sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/paas-ta-container-platform-mariadb-chart.tgz $REPOSITORY_PROJECT_NAME
-sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/paas-ta-container-platform-keycloak-chart.tgz $REPOSITORY_PROJECT_NAME
-sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/paas-ta-container-platform-api-chart.tgz $REPOSITORY_PROJECT_NAME
-sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/paas-ta-container-platform-common-api-chart.tgz $REPOSITORY_PROJECT_NAME
-sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/paas-ta-container-platform-webadmin-chart.tgz $REPOSITORY_PROJECT_NAME
-sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/paas-ta-container-platform-webuser-chart.tgz $REPOSITORY_PROJECT_NAME
-if [ "$CONTAINER_PLATFORM_PORTAL_PROVIDER_TYPE" == "paas-ta-container-platform-portal-service" ]; then
-  sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/paas-ta-container-platform-admin-service-broker-chart.tgz $REPOSITORY_PROJECT_NAME
-  sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/paas-ta-container-platform-user-service-broker-chart.tgz $REPOSITORY_PROJECT_NAME
+sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/container-platform-nfs-storageclass-chart.tgz $REPOSITORY_PROJECT_NAME
+sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/container-platform-harbor-chart.tgz $REPOSITORY_PROJECT_NAME
+sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/container-platform-mariadb-chart.tgz $REPOSITORY_PROJECT_NAME
+sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/container-platform-keycloak-chart.tgz $REPOSITORY_PROJECT_NAME
+sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/container-platform-api-chart.tgz $REPOSITORY_PROJECT_NAME
+sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/container-platform-common-api-chart.tgz $REPOSITORY_PROJECT_NAME
+sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/container-platform-webadmin-chart.tgz $REPOSITORY_PROJECT_NAME
+sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/container-platform-webuser-chart.tgz $REPOSITORY_PROJECT_NAME
+if [ "$CONTAINER_PLATFORM_PORTAL_PROVIDER_TYPE" == "container-platform-portal-service" ]; then
+  sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/container-platform-admin-service-broker-chart.tgz $REPOSITORY_PROJECT_NAME
+  sudo helm cm-push --username $REPOSITORY_USERNAME --password $REPOSITORY_PASSWORD ../charts/container-platform-user-service-broker-chart.tgz $REPOSITORY_PROJECT_NAME
 fi
 sudo helm repo update
 
@@ -131,26 +131,26 @@ kubectl create secret docker-registry $IMAGE_PULL_SECRET --docker-server=http://
 # 7. Deploy the MariaDB
 kubectl create namespace $DATABASE_NAMESPACE
 kubectl create secret docker-registry $IMAGE_PULL_SECRET --docker-server=http://$REPOSITORY_URL --docker-username=$REPOSITORY_USERNAME --docker-password=$REPOSITORY_PASSWORD -n $DATABASE_NAMESPACE
-kubectl apply -f ../values/paas-ta-container-platform-mariadb-configmap.yaml -n $DATABASE_NAMESPACE
-sudo helm install -f ../values/paas-ta-container-platform-mariadb-values.yaml paas-ta-container-platform-mariadb $REPOSITORY_PROJECT_NAME/mariadb --namespace $DATABASE_NAMESPACE
+kubectl apply -f ../values/container-platform-mariadb-configmap.yaml -n $DATABASE_NAMESPACE
+sudo helm install -f ../values/container-platform-mariadb-values.yaml container-platform-mariadb $REPOSITORY_PROJECT_NAME/mariadb --namespace $DATABASE_NAMESPACE
 
 
 # 8. Deploy the Keycloak
 kubectl create namespace $KEYCLOAK_NAMESPACE
 kubectl create secret docker-registry $IMAGE_PULL_SECRET --docker-server=http://$REPOSITORY_URL --docker-username=$REPOSITORY_USERNAME --docker-password=$REPOSITORY_PASSWORD -n $KEYCLOAK_NAMESPACE
-sudo helm install -f ../values/paas-ta-container-platform-keycloak-values.yaml paas-ta-container-platform-keycloak $REPOSITORY_PROJECT_NAME/paas-ta-container-platform-keycloak --namespace $KEYCLOAK_NAMESPACE
+sudo helm install -f ../values/container-platform-keycloak-values.yaml container-platform-keycloak $REPOSITORY_PROJECT_NAME/container-platform-keycloak --namespace $KEYCLOAK_NAMESPACE
 
 
 
 # 9. Deploy the Container Platform Portal
 kubectl create namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
 kubectl create secret docker-registry $IMAGE_PULL_SECRET --docker-server=http://$REPOSITORY_URL --docker-username=$REPOSITORY_USERNAME --docker-password=$REPOSITORY_PASSWORD -n $CONTAINER_PLATFORM_PORTAL_NAMESPACE
-sudo helm install -f ../values/paas-ta-container-platform-api-values.yaml paas-ta-container-platform-api $REPOSITORY_PROJECT_NAME/paas-ta-container-platform-api --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
-sudo helm install -f ../values/paas-ta-container-platform-common-api-values.yaml paas-ta-container-platform-common-api $REPOSITORY_PROJECT_NAME/paas-ta-container-platform-common-api --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
-sudo helm install -f ../values/paas-ta-container-platform-webadmin-values.yaml paas-ta-container-platform-webadmin $REPOSITORY_PROJECT_NAME/paas-ta-container-platform-webadmin --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
-sudo helm install -f ../values/paas-ta-container-platform-webuser-values.yaml paas-ta-container-platform-webuser $REPOSITORY_PROJECT_NAME/paas-ta-container-platform-webuser --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
+sudo helm install -f ../values/container-platform-api-values.yaml container-platform-api $REPOSITORY_PROJECT_NAME/container-platform-api --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
+sudo helm install -f ../values/container-platform-common-api-values.yaml container-platform-common-api $REPOSITORY_PROJECT_NAME/container-platform-common-api --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
+sudo helm install -f ../values/container-platform-webadmin-values.yaml container-platform-webadmin $REPOSITORY_PROJECT_NAME/container-platform-webadmin --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
+sudo helm install -f ../values/container-platform-webuser-values.yaml container-platform-webuser $REPOSITORY_PROJECT_NAME/container-platform-webuser --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
 
-if [ "$CONTAINER_PLATFORM_PORTAL_PROVIDER_TYPE" == "paas-ta-container-platform-portal-service" ]; then
-   sudo helm install -f ../values/paas-ta-container-platform-admin-service-broker-values.yaml paas-ta-container-platform-admin-service-broker $REPOSITORY_PROJECT_NAME/paas-ta-container-platform-admin-service-broker --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
-   sudo helm install -f ../values/paas-ta-container-platform-user-service-broker-values.yaml paas-ta-container-platform-user-service-broker $REPOSITORY_PROJECT_NAME/paas-ta-container-platform-user-service-broker --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
+if [ "$CONTAINER_PLATFORM_PORTAL_PROVIDER_TYPE" == "container-platform-portal-service" ]; then
+   sudo helm install -f ../values/container-platform-admin-service-broker-values.yaml container-platform-admin-service-broker $REPOSITORY_PROJECT_NAME/container-platform-admin-service-broker --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
+   sudo helm install -f ../values/container-platform-user-service-broker-values.yaml container-platform-user-service-broker $REPOSITORY_PROJECT_NAME/container-platform-user-service-broker --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
 fi

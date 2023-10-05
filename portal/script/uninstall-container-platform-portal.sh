@@ -6,18 +6,18 @@ read -p "Are you sure you want to delete the container platform portal? <y/n> " 
 if [[ $prompt == "y" || $prompt == "Y" || $prompt == "yes" || $prompt == "Yes" ]]
 then
   # Uninstall Helm
-  sudo helm uninstall paas-ta-container-platform-harbor --namespace $REPOSITORY_NAMESPACE
-  sudo helm uninstall paas-ta-container-platform-mariadb --namespace $DATABASE_NAMESPACE
-  sudo helm uninstall paas-ta-container-platform-keycloak --namespace $KEYCLOAK_NAMESPACE
-  sudo helm uninstall paas-ta-container-platform-nfs-storageclass --namespace $NFS_NAMESPACE
+  sudo helm uninstall container-platform-harbor --namespace $REPOSITORY_NAMESPACE
+  sudo helm uninstall container-platform-mariadb --namespace $DATABASE_NAMESPACE
+  sudo helm uninstall container-platform-keycloak --namespace $KEYCLOAK_NAMESPACE
+  sudo helm uninstall container-platform-nfs-storageclass --namespace $NFS_NAMESPACE
 
-  sudo helm uninstall paas-ta-container-platform-api --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
-  sudo helm uninstall paas-ta-container-platform-common-api --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
-  sudo helm uninstall paas-ta-container-platform-webadmin --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
-  sudo helm uninstall paas-ta-container-platform-webuser --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
-  if [ "$CONTAINER_PLATFORM_PORTAL_PROVIDER_TYPE" == "paas-ta-container-platform-portal-service" ]; then
-    sudo helm uninstall paas-ta-container-platform-admin-service-broker --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
-    sudo helm uninstall paas-ta-container-platform-user-service-broker --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
+  sudo helm uninstall container-platform-api --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
+  sudo helm uninstall container-platform-common-api --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
+  sudo helm uninstall container-platform-webadmin --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
+  sudo helm uninstall container-platform-webuser --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
+  if [ "$CONTAINER_PLATFORM_PORTAL_PROVIDER_TYPE" == "container-platform-portal-service" ]; then
+    sudo helm uninstall container-platform-admin-service-broker --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
+    sudo helm uninstall container-platform-user-service-broker --namespace $CONTAINER_PLATFORM_PORTAL_NAMESPACE
   fi
 
   # Delete Namespace
